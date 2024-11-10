@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple to-do list web application for managing pending and completed tasks">
+    <title>To-Do List</title>
+    <style>
+        /* SEO-friendly CSS with descriptive classes */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+        }
+        .input-container {
+            display: flex;
+            margin-top: 20px;
+        }
+        .input-task {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+        .add-btn {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .tasks-section {
+            margin-top: 20px;
+        }
+        .task {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .task.completed {
+            border-left: 4px solid #28a745;
+            text-decoration: line-through;
+            color: #888;
+        }
+        .task-checkbox {
+            margin-right: 10px;
+        }
+        .task-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 5px;
+        }
+        .task-btn {
+            padding: 5px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+            color: #fff;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="title">To-Do List</h1>
+    
+    <!-- Add Task Section -->
+    <div class="input-container">
+        <input type="text" id="task-input" class="input-task" placeholder="Enter a new task...">
+        <button class="add-btn" onclick="addTask()">Add</button>
+    </div>
+
+    <!-- Pending and Completed Tasks Section -->
+    <div class="tasks-section">
+        <h2>Pending Tasks</h2>
+        <div id="pending-tasks"></div>
+        
+        <h2>Completed Tasks</h2>
+        <div id="completed-tasks"></div>
+    </div>
+</div>
+
+<script>
+    function addTask() {
+        const taskText = document.getElementById('task-input').value;
+        if (taskText === '') return alert('Please enter a task.');
+
+        const taskDiv = createTaskElement(taskText);
+        document.getElementById('pending-tasks').appendChild(taskDiv);
+        document.getElementById('task-input').value = '';
+    }
+
+    function createTaskElement(taskText) {
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'task';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'task-checkbox';
+        checkbox.onchange = () => toggleTaskStatus(taskDiv, checkbox);
+
+        const taskContent = document.createElement('span');
+        taskContent.innerText = taskText;
+
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'task-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'task-btn edit-btn';
+        editBtn.innerText = 'Edit';
+        editBtn.onclick = () => editTask(taskContent);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'task-btn delete-btn';
+        deleteBtn.innerText = 'Delete';
+        deleteBtn.onclick = () => taskDiv.remove();
+
+        actionsDiv.appendChild(editBtn);
+        actionsDiv.appendChild(deleteBtn);
+
+        taskDiv.appendChild(checkbox);
+        taskDiv.appendChild(taskContent);
+        taskDiv.appendChild(actionsDiv);
+
+        return taskDiv;
+    }
+
+    function toggleTaskStatus(taskDiv, checkbox) {
+        if (checkbox.checked) {
+            taskDiv.classList.add('completed');
+            document.getElementById('completed-tasks').appendChild(taskDiv);
+        } else {
+            taskDiv.classList.remove('completed');
+            document.getElementById('pending-tasks').appendChild(taskDiv);
+        }
+    }
+
+    function editTask(taskContent) {
+        const newText = prompt('Edit task:', taskContent.innerText);
+        if (newText) taskContent.innerText = newText;
+    }
+</script>
+
+</body>
+</html>
